@@ -71,7 +71,6 @@ void add_song_keyboard()
 	cout << "Added song (keyboard)." << endl;
 }
 
-
 void add_song_file()
 {
 	if (song_count >= MAX_SONGS) { cout << "Catalog is full." << endl; return; }
@@ -112,6 +111,22 @@ void add_song_file()
 
 	songs[song_count++] = s;
 	cout << "Added song (file)." << endl;
+}
+
+void delete_song()
+{
+	char title[MAX_TITLE], author[MAX_AUTHOR];
+	cout << "Enter title: "; safe_input(title, MAX_TITLE);
+	cout << "Enter author: "; safe_input(author, MAX_AUTHOR);
+
+
+	int idx = find_song_index(title, author);
+	if (idx == -1) { cout << "Not found." << endl; return; }
+
+
+	for (int i = idx; i < song_count - 1; i++) songs[i] = songs[i + 1];
+	song_count--;
+	cout << "Deleted song." << endl;
 }
 
 int main()
