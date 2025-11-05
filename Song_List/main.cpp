@@ -163,6 +163,24 @@ void edit_song()
 	cout << "Edited song." << endl;
 }
 
+void display_song()
+{
+	char title[MAX_TITLE], author[MAX_AUTHOR];
+	cout << "Enter title: "; 
+	safe_input(title, MAX_TITLE);
+	cout << "Enter author: "; 
+	safe_input(author, MAX_AUTHOR);
+
+	int idx = find_song_index(title, author);
+	if (idx == -1) { cout << "Not found." << endl; return; }
+
+	Song& s = songs[idx];
+	cout << "---\nTitle: " << s.title << "\nAuthor: " << s.author << "\nYear: ";
+	if (s.year == UNKNOWN_YEAR) cout << "unknown";
+	else cout << s.year;
+	cout << "\n---\n" << s.lyrics << "\n---" << endl;
+}
+
 int main()
 {
 
