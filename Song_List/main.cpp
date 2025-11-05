@@ -205,6 +205,50 @@ void save_song_file()
 	cout << "Saved to file." << endl;
 }
 
+
+void search_author()
+{
+	char author[MAX_AUTHOR];
+	cout << "Enter author: "; safe_input(author, MAX_AUTHOR);
+	bool f = false;
+	for (int i = 0; i < song_count; i++)
+		if (strcmp(songs[i].author, author) == 0)
+		{
+			cout << songs[i].title << " (" << (songs[i].year == UNKNOWN_YEAR ? -1 : songs[i].year) << ")" << endl;
+			f = true;
+		}
+	if (!f) cout << "No songs." << endl;
+}
+
+
+bool contains_word(const char* text, const char* word)
+{
+	if (text == NULL || word == NULL)
+		return false;
+
+	int i = 0, j = 0;
+
+	while (text[i] != '\0')
+	{
+		if (tolower(text[i]) == tolower(word[0]))
+		{
+			j = 0;
+			while (word[j] != '\0' && text[i + j] != '\0' &&
+				tolower(text[i + j]) == tolower(word[j]))
+			{
+				j++;
+			}
+
+			if (word[j] == '\0')
+				return true;
+		}
+		i++;
+	}
+
+	return false;
+}
+
+
 int main()
 {
 
