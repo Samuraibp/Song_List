@@ -129,6 +129,40 @@ void delete_song()
 	cout << "Deleted song." << endl;
 }
 
+void edit_song()
+{
+	char title[MAX_TITLE], author[MAX_AUTHOR];
+	cout << "Enter title: "; safe_input(title, MAX_TITLE);
+	cout << "Enter author: "; safe_input(author, MAX_AUTHOR);
+
+
+	int idx = find_song_index(title, author);
+	if (idx == -1) { cout << "Not found." << endl; return; }
+
+
+	Song& s = songs[idx];
+
+
+	char buf[MAX_TITLE];
+	cout << "New title (leave empty to keep current): "; safe_input(buf, MAX_TITLE);
+	if (strlen(buf) > 0) strcpy(s.title, buf);
+
+
+	cout << "New author (leave empty to keep current): "; safe_input(buf, MAX_AUTHOR);
+	if (strlen(buf) > 0) strcpy(s.author, buf);
+
+
+	cout << "New year (0=unknown): "; char y[20]; safe_input(y, 20);
+	if (strlen(y) > 0) { int yi = atoi(y); s.year = (yi == 0 ? UNKNOWN_YEAR : yi); }
+
+
+	cout << "Edit lyrics (y/n): "; char c[5]; safe_input(c, 5);
+	if (c[0] == 'y' || c[0] == 'Y') read_lyrics(s.lyrics);
+
+
+	cout << "Edited song." << endl;
+}
+
 int main()
 {
 
