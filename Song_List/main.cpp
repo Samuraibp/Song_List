@@ -1,4 +1,5 @@
 #include <iostream>
+#include <fstream>
 using namespace std;
 
 const int MAX_SONGS = 200;
@@ -48,7 +49,6 @@ void read_lyrics(char* buffer)
 	}
 }
 
-
 void add_song_keyboard()
 {
 	if (song_count >= MAX_SONGS) { cout << "Catalog is full." << endl; return; }
@@ -69,6 +69,49 @@ void add_song_keyboard()
 
 	songs[song_count++] = s;
 	cout << "Added song (keyboard)." << endl;
+}
+
+
+void add_song_file()
+{
+	if (song_count >= MAX_SONGS) { cout << "Catalog is full." << endl; return; }
+
+
+	Song s;
+	cout << "Enter title: "; safe_input(s.title, MAX_TITLE);
+	cout << "Enter author: "; safe_input(s.author, MAX_AUTHOR);
+	cout << "Enter year (0 if unknown): ";
+	char y[20]; 
+	safe_input(y, 20);
+	int yi = atoi(y);
+	s.year = (yi == 0 ? UNKNOWN_YEAR : yi);
+
+
+	cout << "Enter filename: ";
+	char fname[200]; safe_input(fname, 200);
+	ifstream in(fname);
+	if (!in) { cout << "File open error." << endl; return; }
+
+
+	char temp[MAX_LYRICS];
+	temp[0] = '\0';
+	char line[300];
+	while (in.getline(line, 300))
+	{
+		if (strlen(temp) + strlen(line) + 2 < MAX_LYRICS)
+		{
+			strcat(temp, line);
+			strcat(temp, "\n");
+		}
+	}
+	strcpy(s.lyrics, temp);
+
+
+	if (find_song_index(s.title, s.author) != -1) { cout << "Song exists already." << endl; return; }
+
+
+	songs[song_count++] = s;
+	cout << "Added song (file)." << endl;
 }
 
 int main()
