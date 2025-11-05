@@ -278,7 +278,51 @@ void search_word()
 		cout << "No songs found containing this word.\n";
 }
 
+
 int main()
 {
+	cout << "Song Lyrics Catalog (console)" << endl;
 
+	while (true)
+	{
+		cout << "Menu:" << endl;
+		cout << "1. Add song (keyboard)" << endl;
+		cout << "2. Add song (from file)" << endl;
+		cout << "3. Delete song" << endl;
+		cout << "4. Edit song" << endl;
+		cout << "5. Display song" << endl;
+		cout << "6. Save song to file" << endl;
+		cout << "7. Search songs by author" << endl;
+		cout << "8. Search songs by word" << endl;
+		cout << "9. List all songs" << endl;
+		cout << "0. Exit" << endl;
+		cout << "Choose: ";
+
+
+		char opt[5];
+		safe_input(opt, 5);
+
+
+		if (strcmp(opt, "1") == 0) add_song_keyboard();
+		else if (strcmp(opt, "2") == 0) add_song_file();
+		else if (strcmp(opt, "3") == 0) delete_song();
+		else if (strcmp(opt, "4") == 0) edit_song();
+		else if (strcmp(opt, "5") == 0) display_song();
+		else if (strcmp(opt, "6") == 0) save_song_file();
+		else if (strcmp(opt, "7") == 0) search_author();
+		else if (strcmp(opt, "8") == 0) search_word();
+		else if (strcmp(opt, "9") == 0)
+		{
+			if (song_count == 0) cout << "Catalog is empty." << endl;
+			else
+				for (int i = 0; i < song_count; i++)
+					cout << songs[i].title << " by " << songs[i].author << endl;
+		}
+		else if (strcmp(opt, "0") == 0)
+		{
+			cout << "Goodbye!" << endl;
+			break;
+		}
+		else cout << "Unknown option." << endl;
+	}
 }
