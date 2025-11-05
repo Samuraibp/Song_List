@@ -181,6 +181,30 @@ void display_song()
 	cout << "\n---\n" << s.lyrics << "\n---" << endl;
 }
 
+void save_song_file()
+{
+	char title[MAX_TITLE], author[MAX_AUTHOR];
+	cout << "Enter title: "; 
+	safe_input(title, MAX_TITLE);
+	cout << "Enter author: "; 
+	safe_input(author, MAX_AUTHOR);
+
+	int idx = find_song_index(title, author);
+	if (idx == -1) { cout << "Not found." << endl; return; }
+
+	cout << "Filename: "; char fname[200]; safe_input(fname, 200);
+	ofstream out(fname);
+	if (!out) { cout << "Write error." << endl; return; }
+
+	Song& s = songs[idx];
+	out << s.title << "\n" << s.author << "\n";
+	if (s.year == UNKNOWN_YEAR) out << "unknown\n";
+	else out << s.year << "\n";
+	out << s.lyrics;
+
+	cout << "Saved to file." << endl;
+}
+
 int main()
 {
 
