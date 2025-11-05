@@ -205,7 +205,6 @@ void save_song_file()
 	cout << "Saved to file." << endl;
 }
 
-
 void search_author()
 {
 	char author[MAX_AUTHOR];
@@ -219,7 +218,6 @@ void search_author()
 		}
 	if (!f) cout << "No songs." << endl;
 }
-
 
 bool contains_word(const char* text, const char* word)
 {
@@ -248,6 +246,37 @@ bool contains_word(const char* text, const char* word)
 	return false;
 }
 
+void search_word()
+{
+	char w[50];
+	cout << "Enter word: ";
+	safe_input(w, 50);
+
+	bool found = false;
+
+	for (int i = 0; i < song_count; i++)
+	{
+		if (contains_word(songs[i].lyrics, w) ||
+			contains_word(songs[i].title, w) ||
+			contains_word(songs[i].author, w))
+		{
+			cout << "---------------------------------\n";
+			cout << "Title: " << songs[i].title << endl;
+			cout << "Author: " << songs[i].author << endl;
+			cout << "Year: ";
+			if (songs[i].year != UNKNOWN_YEAR)
+				cout << songs[i].year << endl;
+			else
+				cout << "Unknown" << endl;
+
+			cout << songs[i].lyrics << endl;
+			found = true;
+		}
+	}
+
+	if (!found)
+		cout << "No songs found containing this word.\n";
+}
 
 int main()
 {
