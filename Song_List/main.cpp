@@ -56,8 +56,10 @@ void add_song_keyboard()
 
 
 	Song s;
-	cout << "Enter title: "; safe_input(s.title, MAX_TITLE);
-	cout << "Enter author: "; safe_input(s.author, MAX_AUTHOR);
+	cout << "Enter title: "; 
+	safe_input(s.title, MAX_TITLE);
+	cout << "Enter author: ";
+	safe_input(s.author, MAX_AUTHOR);
 	cout << "Enter year (0 if unknown): ";
 	char y[20]; 
 	safe_input(y, 20);
@@ -279,6 +281,52 @@ void search_word()
 		cout << "No songs found containing this word.\n";
 }
 
+void save_catalog()
+{
+	ofstream out("songs.db");
+	if (!out) return;
+
+	out << song_count << "\n";
+	for (int i = 0; i < song_count; i++)
+	{
+		out << songs[i].title << "\n";
+		out << songs[i].author << "\n";
+		out << songs[i].year << "\n";
+		for (int j = 0; songs[i].lyrics[j] != '\0'; j++)
+			out << songs[i].lyrics[j];
+		out << "\n<<END>>\n";
+	}
+}
+
+void load_catalog()
+{
+	ifstream in("songs.db");
+	if (!in) return;
+
+	in >> song_count;
+	in.ignore(); 
+
+	for (int i = 0; i < song_count; i++)
+	{
+		safe_input(songs[i].title, MAX_TITLE);
+		safe_input(songs[i].author, MAX_AUTHOR);
+
+		char y[20];
+		safe_input(y, 20);
+		songs[i].year = atoi(y);
+
+		songs[i].lyrics[0] = '\0';
+		char line[300];
+		while (true)
+		{
+			safe_input(line, 300);
+			if (strcmp(line, "<<END>>") == 0) break;
+			strcat(songs[i].lyrics, line);
+			strcat(songs[i].lyrics, "\n");
+		}
+	}
+}
+
 
 int main()
 {
@@ -321,6 +369,7 @@ int main()
 		}
 		else if (strcmp(opt, "0") == 0)
 		{
+			save_catalog();
 			cout << "Goodbye!" << endl;
 			break;
 		}
