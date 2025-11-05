@@ -49,6 +49,27 @@ void read_lyrics(char* buffer)
 }
 
 
+void add_song_keyboard()
+{
+	if (song_count >= MAX_SONGS) { cout << "Catalog is full." << endl; return; }
+
+
+	Song s;
+	cout << "Enter title: "; safe_input(s.title, MAX_TITLE);
+	cout << "Enter author: "; safe_input(s.author, MAX_AUTHOR);
+	cout << "Enter year (0 if unknown): ";
+	char y[20]; 
+	safe_input(y, 20);
+	int yi = atoi(y);
+	s.year = (yi == 0 ? UNKNOWN_YEAR : yi);
+
+	read_lyrics(s.lyrics);
+
+	if (find_song_index(s.title, s.author) != -1) { cout << "Song exists already." << endl; return; }
+
+	songs[song_count++] = s;
+	cout << "Added song (keyboard)." << endl;
+}
 
 int main()
 {
