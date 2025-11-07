@@ -116,8 +116,10 @@ void add_song_file()
 void delete_song()
 {
 	char title[MAX_TITLE], author[MAX_AUTHOR];
-	cout << "Enter title: "; safe_input(title, MAX_TITLE);
-	cout << "Enter author: "; safe_input(author, MAX_AUTHOR);
+	cout << "Enter title: "; 
+	safe_input(title, MAX_TITLE);
+	cout << "Enter author: "; 
+	safe_input(author, MAX_AUTHOR);
 
 
 	int idx = find_song_index(title, author);
@@ -132,8 +134,10 @@ void delete_song()
 void edit_song()
 {
 	char title[MAX_TITLE], author[MAX_AUTHOR];
-	cout << "Enter title: "; safe_input(title, MAX_TITLE);
-	cout << "Enter author: "; safe_input(author, MAX_AUTHOR);
+	cout << "Enter title: "; 
+	safe_input(title, MAX_TITLE);
+	cout << "Enter author: "; 
+	safe_input(author, MAX_AUTHOR);
 
 
 	int idx = find_song_index(title, author);
@@ -144,19 +148,23 @@ void edit_song()
 
 
 	char buf[MAX_TITLE];
-	cout << "New title (leave empty to keep current): "; safe_input(buf, MAX_TITLE);
+	cout << "New title (leave empty to keep current): "; 
+	safe_input(buf, MAX_TITLE);
 	if (strlen(buf) > 0) strcpy(s.title, buf);
 
 
-	cout << "New author (leave empty to keep current): "; safe_input(buf, MAX_AUTHOR);
+	cout << "New author (leave empty to keep current): "; 
+	safe_input(buf, MAX_AUTHOR);
 	if (strlen(buf) > 0) strcpy(s.author, buf);
 
 
-	cout << "New year (0=unknown): "; char y[20]; safe_input(y, 20);
+	cout << "New year (0=unknown): "; char y[20]; 
+	safe_input(y, 20);
 	if (strlen(y) > 0) { int yi = atoi(y); s.year = (yi == 0 ? UNKNOWN_YEAR : yi); }
 
 
-	cout << "Edit lyrics (y/n): "; char c[5]; safe_input(c, 5);
+	cout << "Edit lyrics (y/n): "; char c[5]; 
+	safe_input(c, 5);
 	if (c[0] == 'y' || c[0] == 'Y') read_lyrics(s.lyrics);
 
 
@@ -184,16 +192,16 @@ void display_song()
 void save_song_file()
 {
 	char title[MAX_TITLE], author[MAX_AUTHOR];
-	cout << "Enter title: "; 
+	cout << "Enter title: ";
 	safe_input(title, MAX_TITLE);
-	cout << "Enter author: "; 
+	cout << "Enter author: ";
 	safe_input(author, MAX_AUTHOR);
 
 	int idx = find_song_index(title, author);
 	if (idx == -1) { cout << "Not found." << endl; return; }
 
 	cout << "Filename: ";
-	char fname[200]; 
+	char fname[200];
 	safe_input(fname, 200);
 
 	FILE* f = fopen(fname, "w");
@@ -201,12 +209,17 @@ void save_song_file()
 
 	Song& s = songs[idx];
 
-	fprintf(f, "%s\n", s.title);
-	fprintf(f, "%s\n", s.author);
-	if (s.year == UNKNOWN_YEAR) fprintf(f, "unknown\n");
-	else fprintf(f, "%d\n", s.year);
+	fprintf(f, "Title: %s\n", s.title);
+	fprintf(f, "Author: %s\n", s.author);
 
-	fprintf(f, "%s", s.lyrics);
+	if (s.year == UNKNOWN_YEAR)
+		fprintf(f, "Year: Unknown\n");
+	else
+		fprintf(f, "Year: %d\n", s.year);
+
+	fprintf(f, "Lyrics:\n"); 
+
+	fprintf(f, "%s", s.lyrics); 
 
 	fclose(f);
 
@@ -284,97 +297,6 @@ void search_word()
 
 	if (!found)
 		cout << "No songs found containing this word.\n";
-}
-
-void save_catalog()
-{
-	if (song_count >= MAX_SONGS)
-	{
-		cout << "Catalog is full!" << endl;     
-		return;
-	}
-
-	cin.ignore(10000, '\n'); 
-
-	cout << "Enter title: ";
-	cin.getline(songs[song_count].title, MAX_TITLE);
-
-	cout << "Enter author: ";
-	cin.getline(songs[song_count].author, MAX_AUTHOR);
-
-	cout << "Enter year (enter -1 if unknown): ";
-	cin >> songs[song_count].year;
-	cin.ignore(10000, '\n'); 
-
-	cout << "Enter lyrics (finish input with a single '.' on a line):" << endl;
-
-	songs[song_count].lyrics[0] = '\0';  
-
-	while (1)
-	{
-		char line[300];
-		cin.getline(line, 300);
-
-		if (strcmp(line, ".") == 0) break; 
-
-		if (strlen(songs[song_count].lyrics) + strlen(line) + 2 < MAX_LYRICS)
-		{
-			strcat(songs[song_count].lyrics, line);
-			strcat(songs[song_count].lyrics, "\n");
-		}
-		else
-		{
-			cout << "Lyrics limit reached!" << endl;
-			break;
-		}
-	}
-
-
-	song_count++;
-
-	cout << "Song added successfully!" << endl;
-}
-
-void load_catalog()
-{
-	FILE* f = fopen("songs.db", "r");
-	if (!f) return;
-
-	if (fscanf(f, "%d\n", &song_count) != 1)
-	{
-		fclose(f);
-		song_count = 0;
-		return;
-	}
-
-	for (int i = 0; i < song_count; i++)
-	{
-		safe_input(songs[i].title, MAX_TITLE);
-		safe_input(songs[i].author, MAX_AUTHOR);
-
-		char y[20];
-		safe_input(y, 20);
-		songs[i].year = atoi(y);
-
-		songs[i].lyrics[0] = '\0';
-
-		char line[300];
-		while (true)
-		{
-			if (!fgets(line, 300, f)) break;
-
-			int len = strlen(line);
-			if (len > 0 && line[len - 1] == '\n') line[len - 1] = '\0';
-
-			if (strcmp(line, "<<END>>") == 0)
-				break;
-
-			strcat(songs[i].lyrics, line);
-			strcat(songs[i].lyrics, "\n");
-		}
-	}
-
-	fclose(f);
 }
 
 
